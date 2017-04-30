@@ -5,11 +5,11 @@
   * tk_app_example
 
 Example:
-'''python
+```python
 from pytkcom import TkConsole
 from pytkcom import tk_console()
 from pytkcom import tk_app_example()
-'''
+```
 
 Run tk_console() or tk_app_example() to see the results.
 
