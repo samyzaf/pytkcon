@@ -1,3 +1,5 @@
+from .pytkcon import TkConsole
+
 def tk_console(**opt):
     opt.setdefault('width', 100)
     opt.setdefault('height', 30)
@@ -9,4 +11,6 @@ def tk_console(**opt):
     top.title('TkConsole Topelevel window')
     top.geometry("+300+250")
     tkcon.pack()
+    tkcon.focus_set()
     tkcon.master.mainloop()
+

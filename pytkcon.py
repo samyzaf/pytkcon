@@ -309,17 +309,6 @@ class StderrRedirector(object):
         #self.text.master.update()
         sys.__stderr__.flush()
 
-
-#class StdinRedirector(object):
-#    def __init__(self,text_widget):
-#        self.text = text_widget
-#
-#    def readline(self):
-#        line = self.ifh.readline()
-#        if line:
-#            self.ofh.write(line)
-#        return line
-
 def event_modifiers(event):
     modifiers = []
     if event.state & 0x00001:
@@ -334,7 +323,6 @@ def event_modifiers(event):
         modifiers.append('Right_Down')
     if event.state & 0x00200:
         modifiers.append('Middle_Down')
-    #print(modifiers)
     return modifiers
 
 def index_to_tuple(text, index):
@@ -350,21 +338,6 @@ def get_last_line(text):
     start = tuple_to_index((l,0))
     end = str(l) + ".end"
     return text.get(start, end)
-
-#def display_list(L):
-#    txt = ""
-#    n = 0
-#    for e in L:
-#        e = str(e)
-#        if n > 80:
-#            e += '\n'
-#            n = 0
-#        else:
-#            e += '\t'
-#            n += len(e)
-#        txt += e
-#    #txt += '\n'
-#    return txt
 
 def display_list(L):
     txt = ""

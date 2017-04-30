@@ -1,7 +1,8 @@
 import sys
 import tkinter as tk
+from tkinter import messagebox
 from xcanvas import XCanvas
-from pytkcon import TkConsole
+from .pytkcon import TkConsole
 
 # General template for creating a standard Application UI
 # Just copy this code and replcae the methods to whatever you need
@@ -43,42 +44,42 @@ class TkApp(tk.Frame):
         self.tkcon.focus_set()
 
     def new_(self):
-        tk.messagebox.showwarning(
+        messagebox.showwarning(
             "Not implemented",
             "The 'new' method is not implemented yet"
         )
 
     def open(self):
-        tk.messagebox.showwarning(
+        messagebox.showwarning(
             "Not implemented",
             "The 'open' method is not implemented yet"
         )
 
     def exit(self):
-        answer = tk.messagebox.askyesno(
+        answer = messagebox.askyesno(
             "Exit?",
             "Are you sure you want to exit?"
         )
         if answer:
-            sys.exit(0)
+            self.master.destroy()
 
     def clear(self):
         self.text.delete(1.0, tk.END)
 
     def cut(self):
-        tk.messagebox.showwarning(
+        messagebox.showwarning(
             "Not implemented",
             "The 'cut' method is not implemented yet"
         )
 
     def copy(self):
-        tk.messagebox.showwarning(
+        messagebox.showwarning(
             "Not implemented",
             "The 'copy' method is not implemented yet"
         )
 
     def paste(self):
-        tk.messagebox.showwarning(
+        messagebox.showwarning(
             "Not implemented",
             "The 'paste' method is not implemented yet"
         )
@@ -95,27 +96,10 @@ class TkApp(tk.Frame):
         t.pack(fill=tk.BOTH, expand=True)
 
     def about(self):
-        tk.messagebox.showinfo(
+        messagebox.showinfo(
             "About EDA Application",
-            "Engineering Design Project\nEEE Depatment\nOrt Braude College"
+            "Engineering Design Project\nEEE Depatment\nFlinstone College"
         )
-
-
-class StdoutRedirector(object):
-    def __init__(self,text_widget):
-        self.text = text_widget
-
-    def write(self,string):
-        self.text.insert('end', string)
-        self.text.see('end')
-
-class StderrRedirector(object):
-    def __init__(self,text_widget):
-        self.text = text_widget
-
-    def write(self,string):
-        self.text.insert('end', string)
-        self.text.see('end')
 
 def tk_app_example():
     root = tk.Tk()
