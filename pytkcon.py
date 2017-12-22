@@ -1,8 +1,9 @@
-import sys, os, rlcompleter
-import tkinter
+import sys
+import os
+import rlcompleter
 import easygui
 from tkinter.scrolledtext import ScrolledText
-from tkinter import TOP, RIGHT, LEFT, Y, BOTH, VERTICAL, HORIZONTAL, N, S, E, W, SUNKEN, END, INSERT, SEL, SEL_FIRST, SEL_LAST
+from tkinter import TOP, BOTH, END, INSERT, SEL, SEL_FIRST, SEL_LAST
 from threading import Lock
 
 welcome_text = """\
@@ -11,15 +12,17 @@ Use <Shift-Enter> for multi-line commands
 Use <Tab> for autocomplete
 """
 
+
 class TkConsole(ScrolledText):
-    "Tk console widget which can be easily embedded withing tkinter widgets"
+    """Tk console widget which can be easily embedded withing tkinter widgets"""
+
     def __init__(self, master=None, **opt):
         opt.setdefault('width', 80)
         opt.setdefault('height', 24)
-        opt.setdefault('background', 'gray92')   # 'cornsilk', 'FloralWhite'
+        opt.setdefault('background', 'gray92')  # 'cornsilk', 'FloralWhite'
         opt.setdefault('foreground', 'DarkGreen')
         opt.setdefault('font', ('Consolas', 9, 'normal'))
-        self.initfile = opt.pop('initfile', None) 
+        self.initfile = opt.pop('initfile', None)
         self.history = []
         self.complete = rlcompleter.Completer(globals()).complete
         self.write_lock = Lock()
@@ -46,7 +49,7 @@ class TkConsole(ScrolledText):
 
     def bindings(self):
         self.bind("<Return>", self.on_Return)
-        #self.bind("<KeyRelease-Return>", self.on_Return)
+        # self.bind("<KeyRelease-Return>", self.on_Return)
         self.bind("<Shift-KeyRelease-Return>", self.on_Return)
         self.bind("<KeyRelease-Up>", self.on_Up)
         self.bind("<BackSpace>", self.on_BackSpace)
@@ -57,13 +60,13 @@ class TkConsole(ScrolledText):
         self.bind("<Enter>", self.focus)
 
     def run(self, cmd=None):
-        #line,char = self.index('end').split('.')
-        #last_line = self.index('end').split('.')[0]
-        #print(self.index('limit'), self.index(INSERT))
+        # line,char = self.index('end').split('.')
+        # last_line = self.index('end').split('.')[0]
+        # print(self.index('limit'), self.index(INSERT))
         self.tag_add('cmd', 'limit', "%s-1c" % INSERT)
         if cmd is None:
             cmd = self.get('limit', END).lstrip()
-            #print(cmd)
+            # print(cmd)
             self.history.append(cmd)
         self.eval(cmd)
         self.prompt()
@@ -73,8 +76,8 @@ class TkConsole(ScrolledText):
             compile(cmd, '<stdin>', 'eval')
             try:
                 e = eval(cmd, globals())
-                #e = eval(cmd)
-                #self.write(END, '\n')
+                # e = eval(cmd)
+                # self.write(END, '\n')
                 if e is not None:
                     self.write(END, e, ('output',))
             except Exception as err:
@@ -86,25 +89,25 @@ class TkConsole(ScrolledText):
                 self.write(END, "ERROR:\n%s\n" % emsg, ('error',))
 
     def prompt(self):
-        #self.tag_delete('prompt')
-        #self.tag_remove('prompt', 1.0, END)
+        # self.tag_delete('prompt')
+        # self.tag_remove('prompt', 1.0, END)
         if len(get_last_line(self)):
             self.write(END, '\n')
         self.write(END, self._prompt, ('prompt',))
         self.mark_set(INSERT, END)
-        #self.mark_set('limit', INSERT)
+        # self.mark_set('limit', INSERT)
         self.mark_set('limit', '%s-1c' % INSERT)
         self.see(END)
 
     def write(self, index, chars, *args):
         self.write_lock.acquire()
         self.insert(index, chars, *args)
-        #self.see(index)
+        # self.see(index)
         self.write_lock.release()
 
     def write_end(self, txt, tag):
-        l1,c1 = index_to_tuple(self, "%s-1c" % END)
-        l2,c2 = index_to_tuple(self, 'limit')
+        l1, c1 = index_to_tuple(self, "%s-1c" % END)
+        l2, c2 = index_to_tuple(self, 'limit')
         if l1 == l2:
             self.write('limit-3c', txt, (tag,))
         else:
@@ -116,9 +119,9 @@ class TkConsole(ScrolledText):
         self.write_end(txt, tag)
 
     def on_BackSpace(self, event=None):
-        #print(self.get('1.0', 'limit'))
-        #print(event.keysym)
-        #print(self.mark_names())
+        # print(self.get('1.0', 'limit'))
+        # print(event.keysym)
+        # print(self.mark_names())
         if self.tag_nextrange(SEL, '1.0', END) and self.compare(SEL_FIRST, '>=', 'limit'):
             self.delete(SEL_FIRST, SEL_LAST)
         elif self.compare(INSERT, '!=', '1.0') and self.compare(INSERT, '>', 'limit+1c'):
@@ -127,8 +130,8 @@ class TkConsole(ScrolledText):
         return "break"
 
     def on_Delete(self, event=None):
-        #print(event.keysym)
-        #print(self.mark_names())
+        # print(event.keysym)
+        # print(self.mark_names())
         if self.tag_nextrange(SEL, '1.0', END) and self.compare(SEL_FIRST, '>=', 'limit'):
             self.delete(SEL_FIRST, SEL_LAST)
         elif self.compare(INSERT, '>', 'limit+1c'):
@@ -138,12 +141,12 @@ class TkConsole(ScrolledText):
 
     def on_Return(self, event=None):
         modifiers = event_modifiers(event)
-        #print(event.keysym, modifiers)
+        # print(event.keysym, modifiers)
         if self.compare(INSERT, '<', 'limit'):
             if 'Shift' in modifiers: return "break"
             if 'Control' in modifiers: return "break"
             cmd = self.get_cur_cmd()
-            #print("cmd=", cmd, "limit=", self.index('limit'))
+            # print("cmd=", cmd, "limit=", self.index('limit'))
             if cmd:
                 self.insert_cmd(cmd)
                 return "break"
@@ -171,14 +174,14 @@ class TkConsole(ScrolledText):
         pos = self.tag_prevrange('cmd', INSERT, '1.0')
         if not pos:
             return
-        idx1,idx2 = pos
-        l1,c1 = index_to_tuple(self, idx1)
-        l2,c2 = index_to_tuple(self, idx2)
-        #l,c = index_to_tuple(self, INSERT)
+        idx1, idx2 = pos
+        l1, c1 = index_to_tuple(self, idx1)
+        l2, c2 = index_to_tuple(self, idx2)
+        # l,c = index_to_tuple(self, INSERT)
         idx = str(l1) + '.end'
         self.mark_set(INSERT, idx)
         self.see(INSERT)
-        #self.prompt()
+        # self.prompt()
         return
 
     def on_Tab(self, event):
@@ -215,9 +218,9 @@ class TkConsole(ScrolledText):
         ins = "%s-1c" % INSERT
         for i in range(0, len(ranges), 2):
             start = ranges[i]
-            stop = ranges[i+1]
-            #print(repr(self.get(start, stop)))
-            #print(index_to_tuple(self, start), index_to_tuple(self, ins), index_to_tuple(self, stop))
+            stop = ranges[i + 1]
+            # print(repr(self.get(start, stop)))
+            # print(index_to_tuple(self, start), index_to_tuple(self, ins), index_to_tuple(self, stop))
             if self.compare(start, '<=', ins) and self.compare(ins, '<=', stop):
                 return self.get(start, stop).lstrip()
         return ""
@@ -227,8 +230,8 @@ class TkConsole(ScrolledText):
         self.write(END, '\n')
         self.write(END, txt)
         self.prompt()
-        #self.insert_cmd(cmd)
-    
+        # self.insert_cmd(cmd)
+
     def clear(self, event=None):
         self.delete(1.0, END)
         self.prompt()
@@ -255,10 +258,11 @@ class TkConsole(ScrolledText):
 
     def none(self, event=None):
         pass
-        #return "continue"
-        #return "break"
+        # return "continue"
+        # return "break"
 
-#-------------------------------------------------------------------------
+
+# -------------------------------------------------------------------------
 
 class StdoutRedirector(object):
     def __init__(self, text_widget):
@@ -266,14 +270,14 @@ class StdoutRedirector(object):
 
     def write(self, string):
         sys.__stdout__.write(string)
-        l1,c1 = index_to_tuple(self.text, "%s-1c" % END)
-        l2,c2 = index_to_tuple(self.text, 'limit')
+        l1, c1 = index_to_tuple(self.text, "%s-1c" % END)
+        l2, c2 = index_to_tuple(self.text, 'limit')
         if l1 == l2:
             self.text.write('limit-3c', string)
         else:
             self.text.write('end', string)
         self.text.see('end')
-        #self.text.master.update()
+        # self.text.master.update()
 
     def writelines(self, lines):
         sys.__stdout__.writelines(lines)
@@ -281,7 +285,7 @@ class StdoutRedirector(object):
             self.text.write(line)
 
     def flush(self):
-        #self.text.master.update()
+        # self.text.master.update()
         sys.__stdout__.flush()
 
 
@@ -291,14 +295,14 @@ class StderrRedirector(object):
 
     def write(self, string):
         sys.__stderr__.write(string)
-        l1,c1 = index_to_tuple(self.text, "%s-1c" % END)
-        l2,c2 = index_to_tuple(self.text, 'limit')
+        l1, c1 = index_to_tuple(self.text, "%s-1c" % END)
+        l2, c2 = index_to_tuple(self.text, 'limit')
         if l1 == l2:
             self.text.write('limit-3c', string)
         else:
             self.text.write('end', string)
         self.text.see('end')
-        #self.text.master.update()
+        # self.text.master.update()
 
     def writelines(self, lines):
         sys.__stderr__.writelines(lines)
@@ -306,8 +310,9 @@ class StderrRedirector(object):
             self.text.write(line)
 
     def flush(self):
-        #self.text.master.update()
+        # self.text.master.update()
         sys.__stderr__.flush()
+
 
 def event_modifiers(event):
     modifiers = []
@@ -325,26 +330,30 @@ def event_modifiers(event):
         modifiers.append('Middle_Down')
     return modifiers
 
+
 def index_to_tuple(text, index):
     return tuple(map(int, text.index(index).split(".")))
 
+
 def tuple_to_index(t):
-    l,c = t
+    l, c = t
     return str(l) + '.' + str(c)
 
+
 def get_last_line(text):
-    l,c = index_to_tuple(text, END)
+    l, c = index_to_tuple(text, END)
     l -= 1
-    start = tuple_to_index((l,0))
+    start = tuple_to_index((l, 0))
     end = str(l) + ".end"
     return text.get(start, end)
+
 
 def display_list(L):
     txt = ""
     line = ""
     n = max([len(w) for w in L])
-    n = max(n,18) + 2
-    fmt =  "%-" + str(n) + "s"
+    n = max(n, 18) + 2
+    fmt = "%-" + str(n) + "s"
     for e in sorted(L):
         e = str(e)
         if len(line) > 60:
@@ -354,13 +363,11 @@ def display_list(L):
             line += fmt % e
     if len(line):
         txt += line
-        #txt += '\n'
+        # txt += '\n'
     return txt
+
 
 def raw_input(prompt=""):
     if prompt == "":
         prompt = "Input:"
     return easygui.enterbox(prompt, "Raw input", None)
-
-
-
