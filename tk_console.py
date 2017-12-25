@@ -1,5 +1,6 @@
 from .pytkcon import TkConsole
 
+
 def tk_console(**opt):
     opt.setdefault('width', 100)
     opt.setdefault('height', 30)
@@ -13,4 +14,3 @@ def tk_console(**opt):
     tkcon.pack()
     tkcon.focus_set()
     tkcon.master.mainloop()
-
