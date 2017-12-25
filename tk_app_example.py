@@ -4,23 +4,24 @@ from tkinter import messagebox
 from xcanvas import XCanvas
 from .pytkcon import TkConsole
 
+
 # General template for creating a standard Application UI
-# Just copy this code and replcae the methods to whatever you need
+# Just copy this code and replace the methods to whatever you need
 # The Main App window in this example is a Text window, but it can
 # be replaced with whatever is needed
 
 class TkApp(tk.Frame):
     def __init__(self, master=None):
         tk.Frame.__init__(self, master, relief=tk.SUNKEN, bd=2)
-    
+
         self.menubar = tk.Menu(self)
-    
+
         menu = tk.Menu(self.menubar, tearoff=0)
         self.menubar.add_cascade(label="File", menu=menu)
         menu.add_command(label="New", command=self.new_)
         menu.add_command(label="Open", command=self.open)
         menu.add_command(label="Exit", command=self.exit)
-    
+
         menu = tk.Menu(self.menubar, tearoff=0)
         self.menubar.add_cascade(label="Edit", menu=menu)
         menu.add_command(label="Cut", command=self.cut)
@@ -36,7 +37,8 @@ class TkApp(tk.Frame):
         self.master.config(menu=self.menubar)
         self.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
-        self.canvas = XCanvas(self, scrollbars=False, scalewidget=False, x_axis=0, y_axis=0, width=900, height=500, bg="cornsilk")
+        self.canvas = XCanvas(self, scrollbars=False, scalewidget=False, x_axis=0, y_axis=0, width=900, height=500,
+                              bg="cornsilk")
         self.canvas.pack(side=tk.TOP, fill=tk.BOTH, expand=True)
 
         self.tkcon = TkConsole(self, height=12)
@@ -91,7 +93,8 @@ class TkApp(tk.Frame):
             pass
         self.help_top = tk.Tk()
         self.help_top.wm_title('HELP WINDOW')
-        t = tk.Text(self.help_top, font='Consolas 10 bold', width=80, height=24, background='cornsilk', foreground='blue')
+        t = tk.Text(self.help_top, font='Consolas 10 bold', width=80, height=24, background='cornsilk',
+                    foreground='blue')
         t.insert(tk.END, "Edit the help method:\nRead some help file and insert it here")
         t.pack(fill=tk.BOTH, expand=True)
 
@@ -101,6 +104,7 @@ class TkApp(tk.Frame):
             "Engineering Design Project\nEEE Depatment\nFlinstone College"
         )
 
+
 def tk_app_example():
     root = tk.Tk()
     app = TkApp(root)
@@ -108,3 +112,5 @@ def tk_app_example():
     app.master.wm_title('EDA Design App')
     root.mainloop()
 
+
+tk_app_example()
